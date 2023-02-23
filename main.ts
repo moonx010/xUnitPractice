@@ -81,8 +81,7 @@ class TestSuite {
     this.tests.push(test);
   }
 
-  run() {
-    const result = new TestResult();
+  run(result: TestResult) {
     for(const test of this.tests) {
       test.run(result);
     }
@@ -125,13 +124,18 @@ class TestCaseTest extends TestCase{
     const suite = new TestSuite()
     suite.add(new WasRun("testMethod"));
     suite.add(new WasRun("testBrokenMethod"));
-    const result = suite.run();
+    let result = new TestResult();
+    result = suite.run(result);
     assert("2 run, 1 failed" == result.summary());
   }
 }
 
-new TestCaseTest("testTemplateMethod").run(new TestResult())
-new TestCaseTest("testResult").run(new TestResult())
-new TestCaseTest("testBrokenMethod").run(new TestResult())
-new TestCaseTest("testFailedResultFormatting").run(new TestResult())
-new TestCaseTest("testSuite").run(new TestResult())
+const suite = new TestSuite();
+suite.add(new TestCaseTest("testTemplateMethod"));
+suite.add(new TestCaseTest("testResult"));
+suite.add(new TestCaseTest("testBrokenMethod"));
+suite.add(new TestCaseTest("testFailedResultFormatting"));
+suite.add(new TestCaseTest("testSuite"));
+const result = new TestResult();
+suite.run(result);
+console.log(result.summary());
